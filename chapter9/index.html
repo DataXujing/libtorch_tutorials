@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="徐静">
+  
+  <link rel="shortcut icon" href="../icon.ico">
+  
+  <title>第八章 libtorch部署例子 - libtorch</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u516b\u7ae0 libtorch\u90e8\u7f72\u4f8b\u5b50";
+    var mkdocs_page_input_path = "chapter9.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> libtorch</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../about/">关于</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">前言</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter1/">第一章 开发环境搭建(vs,opencv,libtorch)</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter2/">第二章 张量的常规操作</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter3/">第三章 模型搭建</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter4/">第四章 数据加载模块</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter5/">第五章 分类模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter6/">第六章 分割模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter7/">第七章 目标检测模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">第八章 libtorch部署例子</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-mobilenet-v3">1.图像分类的例子 MobileNet v3</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-deeplab-v3">2.语义分割的例子 DeepLab V3+</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-yolov5x">3.目标检测的例子 YOLOv5x</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter8/">第九章 总结展望</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">libtorch</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>第八章 libtorch部署例子</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/DataXujing/libtorch-tutorials/edit/master/docs/chapter9.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="8-libtorch">第8章 libtorch部署例子</h2>
+<hr />
+<h3 id="1-mobilenet-v3">1.图像分类的例子 MobileNet v3</h3>
+<p>关于MobileNet V3可以参考<a href="https://github.com/DataXujing/MobileNet_V3_pytorch">https://github.com/DataXujing/MobileNet_V3_pytorch</a></p>
+<ul>
+<li>首先将训练好的模型转torchscript</li>
+</ul>
+<pre><code class="python">
+from __future__ import print_function, division
+import os
+import torch
+from torch import nn,optim
+import torch.nn.functional as F
+import pandas as pd                 
+import numpy as np
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms, utils
+
+
+import torch
+from mobilenetv3 import *  # model
+from data_pro import *
+import cv2
+
+
+#----------------model define-----------------
+model = mobilenetv3(n_class=2, input_size=224, mode='large')
+state_dict = torch.load(&quot;./checkpoint/20201111/MobileNet_v3_20201111_300_0.9659863945578231.pth&quot;)
+model.load_state_dict(state_dict)
+model.to(torch.device(&quot;cpu&quot;))
+model.eval()
+
+# ----------------------------------------
+var=torch.ones((1,3,224,224))
+traced_script_module = torch.jit.trace(model, var)
+traced_script_module.save(&quot;MobileNet_v3_large.pt&quot;)
+
+
+</code></pre>
+
+<ul>
+<li>libtorch调用模型识别</li>
+</ul>
+<pre><code class="c++">// mobilenetv3.cpp 
+
+#include &lt;torch/torch.h&gt;
+#include &lt;torch/script.h&gt; 
+#include &lt;opencv2/opencv.hpp&gt;
+
+#include &lt;iostream&gt;
+
+using namespace cv;
+using namespace std;
+
+int main()
+{
+    //定义使用cuda
+    //auto device = torch::Device(torch::kCUDA, 0);
+    //读取图片
+
+    vector&lt;float&gt; m = { 0.485, 0.456, 0.406 };
+    vector&lt;float&gt; v = { 0.229, 0.224, 0.225 };
+
+    auto mean = torch::from_blob(m.data(), { 1,3 }, torch::kFloat32);
+    auto var = torch::from_blob(v.data(), { 1,3 }, torch::kFloat32);
+
+    auto image = cv::imread(&quot;.\\test.jpg&quot;);
+
+    //缩放至指定大小
+    cv::resize(image, image, cv::Size(224, 224));
+    //转成张量
+    auto input_tensor = torch::from_blob(image.data, { image.rows, image.cols, 3 }, torch::kByte).permute({ 2, 0, 1 }).unsqueeze(0).to(torch::kFloat32) / 225.0;
+    //auto input_tensor_norm = (input_tensor - mean) / var;
+
+    //加载模型
+    auto model = torch::jit::load(&quot;.\\model\\MobileNet_v3_large.pt&quot;);
+    //model.to(device);
+    model.eval();
+    //前向传播
+    //auto output = model.forward({ input_tensor.to(device) }).toTensor();
+    auto output = model.forward({ input_tensor }).toTensor();
+    output = torch::softmax(output, 1);
+
+    auto class_id = torch::argmax(output);
+    auto prob = output.max();
+
+    std::cout &lt;&lt; &quot;MobileNet v3识别的Label为&quot; &lt;&lt; class_id &lt;&lt; &quot;概率为：&quot; &lt;&lt; prob &lt;&lt; std::endl;
+
+
+    return 0;
+}
+
+</code></pre>
+
+<div align=center>
+<img src="../img/ch9/mobilenet_1.jpg" /> 
+</div>
+
+<div align=center>
+<img src="../img/ch9/mobilenet_2.png" /> 
+</div>
+
+<p><br>
+<br></p>
+<h3 id="2-deeplab-v3">2.语义分割的例子 DeepLab V3+</h3>
+<p>关于deeplab v3+的Pytorch版本的的实现我们参考了：<a href="https://github.com/VainF/DeepLabV3Plus-Pytorch">https://github.com/VainF/DeepLabV3Plus-Pytorch</a></p>
+<p>模型结构为:</p>
+<div align=center>
+<img src="../img/ch9/deeplab_1.png" /> 
+</div>
+
+<p><br></p>
+<ul>
+<li>下载预训练的模型，并将模型转为torchscipt</li>
+</ul>
+<pre><code class="python">
+
+import network
+import utils
+import os
+import random
+import argparse
+import numpy as np
+
+from torch.utils import data
+from datasets import VOCSegmentation, Cityscapes
+from utils import ext_transforms as et
+from metrics import StreamSegMetrics
+
+import torch
+import torch.nn as nn
+from utils.visualizer import Visualizer
+from torchvision import transforms
+
+import cv2
+from PIL import Image
+import matplotlib
+import matplotlib.pyplot as plt
+
+# model
+# Set up model
+model_map = {
+    'deeplabv3_resnet50': network.deeplabv3_resnet50,
+    'deeplabv3plus_resnet50': network.deeplabv3plus_resnet50,
+    'deeplabv3_resnet101': network.deeplabv3_resnet101,
+    'deeplabv3plus_resnet101': network.deeplabv3plus_resnet101,
+    'deeplabv3_mobilenet': network.deeplabv3_mobilenet,
+    'deeplabv3plus_mobilenet': network.deeplabv3plus_mobilenet
+}
+
+
+model = model_map['deeplabv3_resnet50'](num_classes=21, output_stride=16)
+#network.convert_to_separable_conv(model.classifier)
+#utils.set_bn_momentum(model.backbone, momentum=0.01)
+
+model.load_state_dict( torch.load( &quot;../best_deeplabv3_resnet50_voc_os16.pth&quot;,
+    map_location='cpu' )['model_state']  )
+model.eval()
+
+# print(model)
+
+val_transform = transforms.Compose([
+    transforms.Resize( (512,512) ),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                    std=[0.229, 0.224, 0.225]),
+])
+image = Image.open(&quot;../../test.jpg&quot;).convert('RGB')
+image = val_transform(image).unsqueeze(0)
+outputs = model(image)
+preds = outputs.max(1)[1].detach().cpu().numpy()
+
+# model trace
+traced_script_module = torch.jit.trace(model, image)
+traced_script_module.save(&quot;deeplabv3.pt&quot;)
+
+</code></pre>
+
+<p>生成libtorch调用的模型<code>deeplabv3.pt</code></p>
+<ul>
+<li>编写基于libtorch的模型推断方法</li>
+</ul>
+<pre><code class="c++">
+// deeplabv3plus.cpp : 
+
+#include&lt;opencv2/opencv.hpp&gt;
+#include &lt;torch/torch.h&gt;
+#include &lt;torch/script.h&gt; 
+
+#include &lt;iostream&gt;
+
+int main()
+{
+
+    //定义使用cuda
+    //auto device = torch::Device(torch::kCUDA, 0);
+
+    //加载模型
+    auto model = torch::jit::load(&quot;.\\model\\deeplabv3.pt&quot;);
+    //model.to(device);
+    model.eval();
+
+    std::cout &lt;&lt; &quot;deeplab模型加载完毕！&quot; &lt;&lt; std::endl;
+
+    //读取图片
+    auto image = cv::imread(&quot;.\\23_image.png&quot;);
+    //缩放至指定大小
+    cv::resize(image, image, cv::Size(512, 512),cv::INTER_LINEAR);
+    //转成张量
+    auto input_tensor = torch::from_blob(image.data, { image.rows, image.cols, 3 }, torch::kByte).permute({ 2, 0, 1 }).unsqueeze(0).to(torch::kFloat32) / 225.0;
+
+    // 张量的标准化
+    // todo
+    std::cout &lt;&lt; input_tensor.sizes() &lt;&lt; std::endl;
+    std::vector&lt;float&gt; m = { 0.485, 0.456, 0.406 };
+    std::vector&lt;float&gt; v = { 0.229, 0.224, 0.225 };
+    auto mean = torch::from_blob(m.data(), { 1,3,1,1 }, torch::kFloat32);
+    auto var = torch::from_blob(v.data(), { 1,3,1,1 }, torch::kFloat32);
+
+    input_tensor = (input_tensor - mean) / var;
+
+
+    //前向传播
+    //auto output = model.forward({ input_tensor.to(device) }).toTensor();
+    auto output = model.forward({ input_tensor }).toTensor();
+    std::tuple&lt;at::Tensor,at::Tensor&gt; preds = torch::max(output, 1);
+
+    std::cout &lt;&lt; output.sizes() &lt;&lt; std::endl;
+    std::cout &lt;&lt; std::get&lt;0&gt;(preds).sizes() &lt;&lt; std::endl;
+
+    // tensor to cvmat
+    auto pred_img = std::get&lt;1&gt;(preds).mul(255).to(torch::kU8);
+
+    cv::Mat imgbin(cv::Size(512,512), CV_8U, pred_img.data_ptr());
+    cv::imwrite(&quot;seg_res.jpg&quot;, imgbin);
+
+    cv::namedWindow(&quot;segment-result&quot;, 0);
+    cv::imshow(&quot;segment-result&quot;, imgbin);
+    cv::waitKey(0);
+
+    return 0;
+}
+
+
+
+</code></pre>
+
+<ul>
+<li>测试结果展示</li>
+</ul>
+<div align=center>
+<img src="../img/ch9/23_image.png" /> 
+</div>
+
+<p><br>
+<div align=center>
+<img src="../img/ch9/seg_res.jpg" /> 
+</div>
+<br></p>
+<p>识别结果是正确的。</p>
+<h3 id="3-yolov5x">3.目标检测的例子 YOLOv5x</h3>
+<p>我们使用自训练的YOLOv5x 5.0版本的代码，详细的代码可以参考<a href="https://github.com/ultralytics/yolov5">https://github.com/ultralytics/yolov5</a></p>
+<ul>
+<li>生成torchscript模型</li>
+</ul>
+<pre><code class="shell">
+python ./model/export.py --grid
+</code></pre>
+
+<div align=center>
+<img src="../img/ch9/yolov5_1.png" /> 
+</div>
+
+<p><br></p>
+<ul>
+<li>前处理</li>
+</ul>
+<pre><code class="c++">// pre process
+at::Tensor imagpro(std::string imgpath=&quot;./test.jpg&quot;) {
+
+    //读取图片
+    auto image = cv::imread(imgpath);
+    //缩放至指定大小
+    cv::resize(image, image, cv::Size(640, 640));
+    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+    //转成张量
+
+    at::Tensor imgTensor = torch::from_blob(image.data, { image.rows, image.cols,3 }, torch::kByte);
+    imgTensor = imgTensor.permute({ 2,0,1 });
+    imgTensor = imgTensor.toType(torch::kFloat);
+    imgTensor = imgTensor.div(255);
+    imgTensor = imgTensor.unsqueeze(0);
+
+    return imgTensor;
+}
+
+</code></pre>
+
+<ul>
+<li>后处理</li>
+</ul>
+<pre><code class="c++">
+// post process: NMS 
+std::vector&lt;torch::Tensor&gt; non_max_suppression(torch::Tensor preds, float score_thresh = 0.25, float iou_thresh = 0.45)
+{
+    std::vector&lt;torch::Tensor&gt; output;
+    for (size_t i = 0; i &lt; preds.sizes()[0]; ++i)
+    {
+        torch::Tensor pred = preds.select(0, i);
+
+        // Filter by scores
+        torch::Tensor scores = pred.select(1, 4) * std::get&lt;0&gt;(torch::max(pred.slice(1, 5, pred.sizes()[1]), 1));
+        pred = torch::index_select(pred, 0, torch::nonzero(scores &gt; score_thresh).select(1, 0));
+        if (pred.sizes()[0] == 0) continue;
+
+        // (center_x, center_y, w, h) to (left, top, right, bottom)
+        pred.select(1, 0) = pred.select(1, 0) - pred.select(1, 2) / 2;
+        pred.select(1, 1) = pred.select(1, 1) - pred.select(1, 3) / 2;
+        pred.select(1, 2) = pred.select(1, 0) + pred.select(1, 2);
+        pred.select(1, 3) = pred.select(1, 1) + pred.select(1, 3);
+
+        // Computing scores and classes
+        std::tuple&lt;torch::Tensor, torch::Tensor&gt; max_tuple = torch::max(pred.slice(1, 5, pred.sizes()[1]), 1);
+        pred.select(1, 4) = pred.select(1, 4) * std::get&lt;0&gt;(max_tuple);
+        pred.select(1, 5) = std::get&lt;1&gt;(max_tuple);
+
+        torch::Tensor  dets = pred.slice(1, 0, 6);
+
+        torch::Tensor keep = torch::empty({ dets.sizes()[0] });
+        torch::Tensor areas = (dets.select(1, 3) - dets.select(1, 1)) * (dets.select(1, 2) - dets.select(1, 0));
+        std::tuple&lt;torch::Tensor, torch::Tensor&gt; indexes_tuple = torch::sort(dets.select(1, 4), 0, 1);
+        torch::Tensor v = std::get&lt;0&gt;(indexes_tuple);
+        torch::Tensor indexes = std::get&lt;1&gt;(indexes_tuple);
+        int count = 0;
+        while (indexes.sizes()[0] &gt; 0)
+        {
+            keep[count] = (indexes[0].item().toInt());
+            count += 1;
+
+            // Computing overlaps
+            torch::Tensor lefts = torch::empty(indexes.sizes()[0] - 1);
+            torch::Tensor tops = torch::empty(indexes.sizes()[0] - 1);
+            torch::Tensor rights = torch::empty(indexes.sizes()[0] - 1);
+            torch::Tensor bottoms = torch::empty(indexes.sizes()[0] - 1);
+            torch::Tensor widths = torch::empty(indexes.sizes()[0] - 1);
+            torch::Tensor heights = torch::empty(indexes.sizes()[0] - 1);
+            for (size_t i = 0; i &lt; indexes.sizes()[0] - 1; ++i)
+            {
+                lefts[i] = std::max(dets[indexes[0]][0].item().toFloat(), dets[indexes[i + 1]][0].item().toFloat());
+                tops[i] = std::max(dets[indexes[0]][1].item().toFloat(), dets[indexes[i + 1]][1].item().toFloat());
+                rights[i] = std::min(dets[indexes[0]][2].item().toFloat(), dets[indexes[i + 1]][2].item().toFloat());
+                bottoms[i] = std::min(dets[indexes[0]][3].item().toFloat(), dets[indexes[i + 1]][3].item().toFloat());
+                widths[i] = std::max(float(0), rights[i].item().toFloat() - lefts[i].item().toFloat());
+                heights[i] = std::max(float(0), bottoms[i].item().toFloat() - tops[i].item().toFloat());
+            }
+            torch::Tensor overlaps = widths * heights;
+
+            // FIlter by IOUs
+            torch::Tensor ious = overlaps / (areas.select(0, indexes[0].item().toInt()) + torch::index_select(areas, 0, indexes.slice(0, 1, indexes.sizes()[0])) - overlaps);
+            indexes = torch::index_select(indexes, 0, torch::nonzero(ious &lt;= iou_thresh).select(1, 0) + 1);
+        }
+        keep = keep.toType(torch::kInt64);
+        output.push_back(torch::index_select(dets, 0, keep.slice(0, 0, count)));
+    }
+    return output;
+
+}
+
+</code></pre>
+
+<ul>
+<li>可视化plot box</li>
+</ul>
+<pre><code class="c++">
+// plot box
+void plotbox(std::vector&lt;torch::Tensor&gt; dets,cv::Mat image, std::vector&lt;std::string&gt; classnames) {
+
+    if (dets.size() &gt; 0)
+    {
+        // Visualize result
+        for (size_t i = 0; i &lt; dets[0].sizes()[0]; ++i)
+        {
+            float left = dets[0][i][0].item().toFloat() * image.cols / 640;
+            float top = dets[0][i][1].item().toFloat() * image.rows / 640;
+            float right = dets[0][i][2].item().toFloat() * image.cols / 640;
+            float bottom = dets[0][i][3].item().toFloat() * image.rows / 640;
+            float score = dets[0][i][4].item().toFloat();
+            int classID = dets[0][i][5].item().toInt();
+
+            cv::rectangle(image, cv::Rect(left, top, (right - left), (bottom - top)), cv::Scalar(0, 255, 0), 2);
+
+            cv::putText(image,
+                classnames[classID] + &quot;: &quot; + cv::format(&quot;%.2f&quot;, score),
+                cv::Point(left, top),
+                cv::FONT_HERSHEY_SIMPLEX, (right - left) / 200, cv::Scalar(0, 255, 0), 2);
+        }
+    }
+
+    cv::imshow(&quot;YOLOv5-Res&quot;, image);
+    cv::waitKey(0);
+
+}
+
+</code></pre>
+
+<ul>
+<li>主函数</li>
+</ul>
+<pre><code class="c++">
+int main()
+{
+    // eus
+    // Loading  Model
+    torch::jit::script::Module module = torch::jit::load(&quot;./model/best.torchscript.pt&quot;);
+    std::cout &lt;&lt; &quot;[info] 模型加载完毕&quot; &lt;&lt; std::endl;
+
+    //加载类别
+    std::vector&lt;std::string&gt; classnames;
+    std::ifstream f(&quot;./model/coco.names&quot;);
+    std::string name = &quot;&quot;;
+    while (std::getline(f, name))
+    {
+        classnames.push_back(name);
+    }
+
+    std::cout &lt;&lt; &quot;[info] 类别名称: &quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; classnames &lt;&lt; std::endl;
+
+    // 前处理
+    at::Tensor inputtensor = imagpro(&quot;./test.jpg&quot;);
+    // yolov5 模型识别
+    torch::Tensor preds = module.forward({ inputtensor }).toTuple()-&gt;elements()[0].toTensor();
+    // 后处理
+    std::vector&lt;torch::Tensor&gt; dets = non_max_suppression(preds, 0.25, 0.45);
+
+    //plotbox
+    cv::Mat image = cv::imread(&quot;./test.jpg&quot;);
+    plotbox(dets, image, classnames);
+
+    return 0;
+}
+
+
+</code></pre>
+
+<p>识别结果</p>
+<div align=center>
+<img src="../img/ch9/yolov5_2.png" /> 
+</div>
+
+<p><br></p>
+<p>可以看到识别是正常的！</p>
+<p>综上，我们完成了计算机视觉中常用的分类，分割，检测网络的libtorch的C++部署。</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../chapter8/" class="btn btn-neutral float-right" title="第九章 总结展望">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../chapter7/" class="btn btn-neutral" title="第七章 目标检测模型搭建，训练，预测"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/DataXujing/libtorch-tutorials/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../chapter7/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../chapter8/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="徐静">
+  
+  <link rel="shortcut icon" href="../icon.ico">
+  
+  <title>第二章 张量的常规操作 - libtorch</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e8c\u7ae0 \u5f20\u91cf\u7684\u5e38\u89c4\u64cd\u4f5c";
+    var mkdocs_page_input_path = "chapter2.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> libtorch</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../about/">关于</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">前言</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter1/">第一章 开发环境搭建(vs,opencv,libtorch)</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">第二章 张量的常规操作</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1tensor">1.Tensor的初始化</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2tensor">2.Tensor的变形</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3tensor">3.Tensor的切片</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4tensor">4.Tensor间的操作</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter3/">第三章 模型搭建</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter4/">第四章 数据加载模块</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter5/">第五章 分类模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter6/">第六章 分割模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter7/">第七章 目标检测模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter9/">第八章 libtorch部署例子</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter8/">第九章 总结展望</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">libtorch</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>第二章 张量的常规操作</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/DataXujing/libtorch-tutorials/edit/master/docs/chapter2.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="_1">第二章 张量的常规操作</h2>
+<hr />
+<!-- <div align=center>
+<img src="../img/logo.png" /> 
+</div> -->
+
+<p>ibtorch(pytorch c++)的大多数api和pytorch保持一致，因此，libtorch中张量的初始化也和pytorch中的类似。本文介绍四种深度图像编程需要的初始化方法。</p>
+<h3 id="1tensor">1.Tensor的初始化</h3>
+<p>第一种，固定尺寸和值的初始化。</p>
+<pre><code>//常见固定值的初始化方式
+auto b = torch::zeros({3,4});
+b = torch::ones({3,4});
+b= torch::eye(4);
+b = torch::full({3,4},10);
+b = torch::tensor({33,22,11});
+
+</code></pre>
+
+<p>pytorch中用<code>[]</code>表示尺寸，而cpp中用<code>{}</code>表示。zeros产生值全为0的张量。ones产生值全为1的张量。eye产生单位矩阵张量。full产生指定值和尺寸的张量。<code>torch::tensor({})</code>也可以产生张量，效果和pytorch的<code>torch.Tensor([])</code>或者<code>torch.tensor([])</code>一样。</p>
+<p>第二种，固定尺寸，随机值的初始化方法</p>
+<pre><code>//随机初始化
+auto r = torch::rand({3,4});
+r = torch::randn({3, 4});
+r = torch::randint(0, 4,{3,3});
+</code></pre>
+
+<p>rand产生0-1之间的随机值，randn取正态分布N(0,1)的随机值，randint取<code>[min,max)</code>的随机整型数值。</p>
+<p>第三种，从c++的其他数据类型转换而来</p>
+<pre><code>int aa[10] = {3,4,6};
+std::vector&lt;float&gt; aaaa = {3,4,6};
+auto aaaaa = torch::from_blob(aa,{3},torch::kFloat);
+auto aaa = torch::from_blob(aaaa.data(),{3},torch::kFloat);
+</code></pre>
+
+<p>pytorch可以接受从其他数据类型如numpy和list的数据转化成张量。libtorch同样可以接受其他数据指针，通过<code>from_blob</code>函数即可转换。这个方式在部署中经常用到，如果图像是opencv加载的，那么可以通过<code>from_blob</code>将图像指针转成张量。</p>
+<p>第四种，根据已有张量初始化</p>
+<pre><code>auto b = torch::zeros({3,4});
+auto d = torch::Tensor(b);
+d = torch::zeros_like(b);
+d = torch::ones_like(b);
+d = torch::rand_like(b,torch::kFloat);
+d = b.clone();
+</code></pre>
+
+<p>这里，<code>auto d = torch::Tensor(b)</code>等价于<code>auto d = b</code>，两者初始化的张量d均受原张量b的影响，b中的值发生改变，d也将发生改变，但是b如果只是张量变形，d却不会跟着变形，仍旧保持初始化时的形状，这种表现称为浅拷贝。zeros_like和ones_like顾名思义将产生和原张量b相同形状的0张量和1张量，randlike同理。最后一个clone函数则是完全拷贝成一个新的张量，原张量b的变化不会影响d，这被称作<code>深拷贝</code>。</p>
+<h3 id="2tensor">2.Tensor的变形</h3>
+<p>torch改变张量形状，不改变张量存储的data指针指向的内容，只改变张量的取数方式。libtorch的变形方式和pytorch一致，有view，transpose，reshape，permute等常用变形。</p>
+<pre><code>auto b = torch::full({10},3);
+b.view({1, 2,-1});
+std::cout &lt;&lt; b;
+
+b = b.view({1, 2,-1});
+std::cout &lt;&lt; b;
+
+auto c = b.transpose(0,1);
+std::cout &lt;&lt; c;
+
+auto d = b.reshape({1,1,-1});
+std::cout &lt;&lt; d;
+
+auto e = b.permute({1,0,2});
+std::cout &lt;&lt; e;
+</code></pre>
+
+<p><code>.view</code>不是inplace操作，需要加=。变形操作没太多要说的，和pytorch一样。还有squeeze和unsqueeze操作，也与pytorch相同。</p>
+<h3 id="3tensor">3.Tensor的切片</h3>
+<p>通过索引截取张量，代码如下</p>
+<pre><code>auto b = torch::rand({10,3,28,28});
+std::cout &lt;&lt; b[0].sizes(); //第0张照片
+std::cout &lt;&lt; b[0][0].sizes(); //第0张照片的第0个通道
+std::cout &lt;&lt; b[0][0][0].sizes(); //第0张照片的第0个通道的第0行像素 dim为1
+std::cout &lt;&lt; b[0][0][0][0].sizes(); //第0张照片的第0个通道的第0行的第0个像素 dim为0
+</code></pre>
+
+<p>除了索引，还有其他操作是常用的，如narrow，select，index，index_select。</p>
+<pre><code>std::cout &lt;&lt; b.index_select(0,torch::tensor({0, 3, 3})).sizes(); //选择第0维的0，3，3组成新张量[3,3,28,28]
+std::cout &lt;&lt; b.index_select(1,torch::tensor({0,2})).sizes(); //选择第1维的第0和第2的组成新张量[10, 2, 28, 28]
+std::cout &lt;&lt; b.index_select(2,torch::arange(0,8)).sizes(); //选择十张图片每个通道的前8列的所有像素[10, 3, 8, 28]
+std::cout &lt;&lt; b.narrow(1,0,2).sizes(); //选择第1维，从0开始，截取长度为2的部分张量[10, 2, 28, 28]
+std::cout &lt;&lt; b.select(3,2).sizes(); //选择第3维度的第二个张量，即所有图片的第2行组成的张量[10, 3, 28]
+</code></pre>
+
+<p>index需要单独说明用途。在pytorch中，通过掩码Mask对张量进行筛选是容易的直接<code>Tensor[Mask]</code>即可。但是c++中无法直接这样使用，需要index函数实现，代码如下：</p>
+<pre><code>auto c = torch::randn({3,4});
+auto mask = torch::zeros({3,4});
+mask[0][0] = 1;
+std::cout&lt;&lt;c;
+std::cout&lt;&lt;c.index({mask.to(torch::kBool)});
+</code></pre>
+
+<p>有网友提问，这样index出来的张量是深拷贝的结果，也就是得到一个新的张量，那么如何对原始张量的mask指向的值做修改呢。查看torch的api发现还有index_put_函数用于直接放置指定的张量或者常数。组合index_put_和index函数可以实现该需求。</p>
+<pre><code>auto c = torch::randn({ 3,4 });
+auto mask = torch::zeros({ 3,4 });
+mask[0][0] = 1;
+mask[0][2] = 1;
+std::cout &lt;&lt; c;
+std::cout &lt;&lt; c.index({ mask.to(torch::kBool) });
+std::cout &lt;&lt; c.index_put_({ mask.to(torch::kBool) }, c.index({ mask.to(torch::kBool) })+1.5);
+std::cout &lt;&lt; c;
+</code></pre>
+
+<p>此外python中还有一种常见取数方式<code>tensor[:,0::4]</code>这种在第1维，起始位置为0，间隔4取数的方式，在c++中直接用<code>slice</code>函数实现。</p>
+<h3 id="4tensor">4.Tensor间的操作</h3>
+<p>拼接和堆叠</p>
+<pre><code>auto b = torch::ones({3,4});
+auto c = torch::zeros({3,4});
+auto cat = torch::cat({b,c},1); //1表示第1维，输出张量[3,8]
+auto stack = torch::stack({b,c},1); //1表示第1维，输出[3,2,4]
+std::cout &lt;&lt; b &lt;&lt; c &lt;&lt; cat &lt;&lt; stack;
+</code></pre>
+
+<p>到这读者会发现，从pytorch到libtorch，掌握了<code>[]</code>到<code>{}</code>的变化就简单很多，大部分操作可以直接迁移。</p>
+<p>四则运算操作同理，像对应元素乘除直接用<code>*</code>和<code>/</code>即可，也可以用<code>.mul</code>和<code>.div</code>。矩阵乘法用<code>.mm</code>，加入批次就是<code>.bmm</code>。</p>
+<pre><code>auto b = torch::rand({3,4});
+auto c = torch::rand({3,4});
+std::cout &lt;&lt; b &lt;&lt; c &lt;&lt; b*c &lt;&lt; b/c &lt;&lt; b.mm(c.t());
+
+</code></pre>
+
+<p>其他一些操作像<code>clamp</code>，<code>min</code>，<code>max</code>这种都和pytorch类似，仿照上述方法可以自行探索。</p>
+<p>感谢大佬：<a href="https://allentdan.github.io/2021/01/16/libtorch%E6%95%99%E7%A8%8B%EF%BC%88%E4%BA%8C%EF%BC%89/">libtorch教程（二）</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../chapter3/" class="btn btn-neutral float-right" title="第三章 模型搭建">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../chapter1/" class="btn btn-neutral" title="第一章 开发环境搭建(vs,opencv,libtorch)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/DataXujing/libtorch-tutorials/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../chapter1/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../chapter3/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

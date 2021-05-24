@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="徐静">
+  
+  <link rel="shortcut icon" href="../icon.ico">
+  
+  <title>第四章 数据加载模块 - libtorch</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u56db\u7ae0 \u6570\u636e\u52a0\u8f7d\u6a21\u5757";
+    var mkdocs_page_input_path = "chapter4.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> libtorch</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../about/">关于</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">前言</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter1/">第一章 开发环境搭建(vs,opencv,libtorch)</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter2/">第二章 张量的常规操作</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter3/">第三章 模型搭建</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">第四章 数据加载模块</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1">1.使用前置条件</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2">2.图片文件遍历</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3dataset">3.自定义Dataset</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4dataset">4.使用自定义的Dataset</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter5/">第五章 分类模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter6/">第六章 分割模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter7/">第七章 目标检测模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter9/">第八章 libtorch部署例子</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter8/">第九章 总结展望</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">libtorch</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>第四章 数据加载模块</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/DataXujing/libtorch-tutorials/edit/master/docs/chapter4.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="_1">第四章 数据加载模块</h2>
+<hr />
+<p>本章将详细介绍如何使用libtorch自带的数据加载模块，使用该模块是实现模型训练的重要条件。除非这个数据加载模块功能不够，不然继承libtorch的数据加载类还是很有必要的，简单高效。</p>
+<h3 id="1">1.使用前置条件</h3>
+<p>libtorch提供了丰富的基类供用户自定义派生类，<code>torch::data::Dataset</code>就是其中一个常用基类。使用该类需要明白基类和派生类，以及所谓的继承和多态。有c++编程经验者应该都不会陌生，为方便不同阶段读者就简单解释一下吧。类就是父亲，可以生出不同的儿子，生儿子叫派生或者继承(看使用语境)，生不同的儿子就实现了多态。父亲就是基类，儿子就是派生类。现实中，父亲会把自身的一部分财产留下来养老，儿子们都不能碰，这就是private了，部分财产儿子能用，但是儿子的对象不能用，这叫protected，还有些财产谁都能用就是public。和现实中的父子类似，代码中，派生类可以使用父类的部分属性或者函数，全看父类怎样定义。</p>
+<p>然后理解一下虚函数，就是父亲指定了部分财产是public的，但是是用来买房的，不同的儿子可以买不同的房子，可以全款可以贷款，这就是财产在父亲那就是virtual的。子类要继承这个virtual财产可以自己重新规划使用方式。</p>
+<p>事实上，如果有过pytorch的编程经验者很快会发现，libtorch的Dataset类的使用和python下使用非常相像。pytorch自定义dataload，需要定义好Dataset的派生类，包括初始化函数<code>init</code>，获取函数<code>getitem</code>以及数据集大小函数<code>len</code>。类似的，libtorch中同样需要处理好初始化函数，<code>get()</code>函数和<code>size()</code>函数。</p>
+<h3 id="2">2.图片文件遍历</h3>
+<p>下面以分类任务为例，介绍libtorch的Dataset类的使用。使用pytorch官网提供的<a href="https://download.pytorch.org/tutorial/hymenoptera_data.zip">昆虫分类数据集</a>，下载到本地解压。将该数据集根目录作为索引，实现Dataloader对图片的加载。</p>
+<p>首先定义一个加载图片的函数，使用网上出现较多的c++遍历文件夹的代码，将代码稍作修改如下：</p>
+<pre><code class="cpp">//遍历该目录下的.jpg图片
+//函数声明
+// https://github.com/AllentDan/LibtorchTutorials/tree/main/lesson4-DatasetUtilization
+void load_data_from_folder(std::string image_dir, std::string type, std::vector&lt;std::string&gt; &amp;list_images, std::vector&lt;int&gt; &amp;list_labels, int label);
+
+void load_data_from_folder(std::string path, std::string type, std::vector&lt;std::string&gt; &amp;list_images, std::vector&lt;int&gt; &amp;list_labels, int label)
+{
+    // 声明变量
+    long long hFile = 0; //句柄
+    struct _finddata_t fileInfo;
+    std::string pathName;
+
+    if ((hFile = _findfirst(pathName.assign(path).append(&quot;\\*.*&quot;).c_str(), &amp;fileInfo)) == -1)
+    {
+        return;
+    }
+    do
+    {
+        const char* s = fileInfo.name;
+        const char* t = type.data();
+
+        if (fileInfo.attrib&amp;_A_SUBDIR) //是子文件夹
+        {
+            //遍历子文件夹中的文件(夹)
+            if (strcmp(s, &quot;.&quot;) == 0 || strcmp(s, &quot;..&quot;) == 0) //子文件夹目录是.或者..
+                continue;
+            std::string sub_path = path + &quot;\\&quot; + fileInfo.name;
+            label++;
+            load_data_from_folder(sub_path, type, list_images, list_labels, label);
+
+        }
+        else //判断是不是后缀为type文件
+        {
+            if (strstr(s, t))
+            {
+                std::string image_path = path + &quot;\\&quot; + fileInfo.name;
+                list_images.push_back(image_path);
+                list_labels.push_back(label);
+            }
+        }
+    } while (_findnext(hFile, &amp;fileInfo) == 0);
+    return;
+}
+</code></pre>
+
+<p>修改后的函数接受数据集文件夹路径image_dir和图片类型image_type，将遍历到的图片路径和其类别分别存储到list_images和list_labels，最后lable变量用于表示类别计数。传入lable=-1，返回的lable值加一后等于图片类别。</p>
+<h3 id="3dataset">3.自定义Dataset</h3>
+<p>定义dataSetClc，该类继承自<code>torch::data::Dataset</code>。定义私有变量image_paths和labels分别存储图片路径和类别，是两个vector变量。dataSetClc的初始化函数就是加载图片和类别。通过get()函数返回由图像和类别构成的张量列表。可以在get()函数中做任意针对图像的操作，如数据增强等。效果等价于pytorch中的getitem中的数据增强。</p>
+<pre><code class="cpp">class dataSetClc:public torch::data::Dataset&lt;dataSetClc&gt;{
+public:
+    int class_index = 0;
+    dataSetClc(std::string image_dir, std::string type){
+        load_data_from_folder(image_dir, std::string(type), image_paths, labels, class_index-1);
+    }
+    // Override get() function to return tensor at location index
+    // 重写get()和size()方法
+    torch::data::Example&lt;&gt; get(size_t index) override{
+        std::string image_path = image_paths.at(index);  //vector的切片
+        cv::Mat image = cv::imread(image_path);
+        cv::resize(image, image, cv::Size(224, 224)); //尺寸统一，用于张量stack，否则不能使用stack
+        int label = labels.at(index);
+        torch::Tensor img_tensor = torch::from_blob(image.data, { image.rows, image.cols, 3 }, torch::kByte).permute({ 2, 0, 1 }); // Channels x Height x Width
+        torch::Tensor label_tensor = torch::full({ 1 }, label);
+        return {img_tensor.clone(), label_tensor.clone()};
+    }
+    // Override size() function, return the length of data
+    torch::optional&lt;size_t&gt; size() const override {
+        return image_paths.size();
+    };
+private:
+    std::vector&lt;std::string&gt; image_paths;
+    std::vector&lt;int&gt; labels;
+};
+</code></pre>
+
+<h3 id="4dataset">4.使用自定义的Dataset</h3>
+<p>下面使用定义好的数据加载类，以昆虫分类中的训练集作为测试，代码如下。可以打印加载的图片张量和类别。</p>
+<pre><code class="cpp">int batch_size = 2;
+std::string image_dir = &quot;your path to\\hymenoptera_data\\train&quot;;
+auto mdataset = myDataset(image_dir,&quot;.jpg&quot;).map(torch::data::transforms::Stack&lt;&gt;());
+auto mdataloader = torch::data::make_data_loader&lt;torch::data::samplers::RandomSampler&gt;(std::move(mdataset), batch_size);
+for(auto &amp;batch: *mdataloader){
+    auto data = batch.data;
+    auto target = batch.target;
+    std::cout&lt;&lt;data.sizes()&lt;&lt;target;
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../chapter5/" class="btn btn-neutral float-right" title="第五章 分类模型搭建，训练，预测">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../chapter3/" class="btn btn-neutral" title="第三章 模型搭建"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/DataXujing/libtorch-tutorials/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../chapter3/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../chapter5/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="徐静">
+  
+  <link rel="shortcut icon" href="../icon.ico">
+  
+  <title>第六章 分割模型搭建，训练，预测 - libtorch</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u516d\u7ae0 \u5206\u5272\u6a21\u578b\u642d\u5efa\uff0c\u8bad\u7ec3\uff0c\u9884\u6d4b";
+    var mkdocs_page_input_path = "chapter6.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> libtorch</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../about/">关于</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">前言</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter1/">第一章 开发环境搭建(vs,opencv,libtorch)</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter2/">第二章 张量的常规操作</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter3/">第三章 模型搭建</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter4/">第四章 数据加载模块</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter5/">第五章 分类模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">第六章 分割模型搭建，训练，预测</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1">1.模型简介</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2resnet">2.编码器—ResNet</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3u-net">3.U-Net解码</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4u-net">4.U-Net整体设计</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter7/">第七章 目标检测模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter9/">第八章 libtorch部署例子</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter8/">第九章 总结展望</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">libtorch</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>第六章 分割模型搭建，训练，预测</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/DataXujing/libtorch-tutorials/edit/master/docs/chapter6.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="_1">第六章 分割模型搭建，训练，预测</h2>
+<hr />
+<p>本章简要介绍如何如何用C++实现一个语义分割器模型，该模型具有训练和预测的功能。本文的分割模型架构使用简单的U-Net结构，代码结构参考了<a href="https://github.com/qubvel/segmentation_models.pytorch">qubvel segmentation</a>中的U-Net部分，该项目简称SMP，是基于pytorch实现的开源语义分割项目。本文分享的c++模型几乎完美复现了python的版本。</p>
+<h3 id="1">1.模型简介</h3>
+<p>简单介绍一下U-Net模型。U-Net模型的提出是在医学图像分割中，相比于当时的其他模型结构，U-Net的分割能力具有明显优势。一个经典的U-Net结构图如下：</p>
+<div align=center>
+<img src="../img/ch6/U-Net.png" /> 
+</div>
+
+<p><br></p>
+<p>U-Net模型采用典型的编码器-解码器结构，左边的编码部分类似VGG模型，是双卷积+下采样的多次堆叠。U-Net模型右边的解码部分同样是双卷积，但是为了得到接近原始输入图像大小的输出图像，针对编码的下采样实施了对应的上采样。最重要的是，U-Net之所以效果突出，重要原因在于其在解码部分利用了编码环节的特征图，拼接编码和解码的特征图，再对拼接后特征图卷积上采样，重复多次得到解码输出。</p>
+<h3 id="2resnet">2.编码器—ResNet</h3>
+<p>本文介绍的编码器使用ResNet网络，同时可以像第五章一样加载预训练权重，即骨干网络为ImageNet预训练的ResNet。话不多说，直接上c++的ResNet代码。</p>
+<p>1.Block搭建</p>
+<p>建议看本文代码时打开pytorch的torchvision中的resnet.py，对比阅读。</p>
+<p>首先是基础模块，pytorch针对resnet18，resne34和resnet50，resnet101，resnet152进行分类，resnet18与resnet34均使用BasicBlock，而更深的网络使用BottleNeck。我不想使用模板类编程，就直接将两个模块合为一体。声明如下：</p>
+<pre><code class="c++">class BlockImpl : public torch::nn::Module {
+public:
+    BlockImpl(int64_t inplanes, int64_t planes, int64_t stride_ = 1,
+        torch::nn::Sequential downsample_ = nullptr, int groups = 1, int base_width = 64, bool is_basic = true);
+    torch::Tensor forward(torch::Tensor x);
+    torch::nn::Sequential downsample{ nullptr };
+private:
+    bool is_basic = true;
+    int64_t stride = 1;
+    torch::nn::Conv2d conv1{ nullptr };
+    torch::nn::BatchNorm2d bn1{ nullptr };
+    torch::nn::Conv2d conv2{ nullptr };
+    torch::nn::BatchNorm2d bn2{ nullptr };
+    torch::nn::Conv2d conv3{ nullptr };
+    torch::nn::BatchNorm2d bn3{ nullptr };
+};
+TORCH_MODULE(Block);
+</code></pre>
+
+<p>可以发现，其实是直接声明了三个conv结构和一个is_basic标志位判断定义时进行BasicBlock定义还是BottleNeck定义。下面是其定义:</p>
+<pre><code class="c++">
+// 构造函数的实现
+BlockImpl::BlockImpl(int64_t inplanes, int64_t planes, int64_t stride_,
+    torch::nn::Sequential downsample_, int groups, int base_width, bool _is_basic)
+{
+    downsample = downsample_;
+    stride = stride_;
+    int width = int(planes * (base_width / 64.)) * groups;
+
+    conv1 = torch::nn::Conv2d(conv_options(inplanes, width, 3, stride_, 1, groups, false));
+    bn1 = torch::nn::BatchNorm2d(torch::nn::BatchNorm2dOptions(width));
+    conv2 = torch::nn::Conv2d(conv_options(width, width, 3, 1, 1, groups, false));
+    bn2 = torch::nn::BatchNorm2d(torch::nn::BatchNorm2dOptions(width));
+    is_basic = _is_basic;
+    if (!is_basic) {
+        conv1 = torch::nn::Conv2d(conv_options(inplanes, width, 1, 1, 0, 1, false));
+        conv2 = torch::nn::Conv2d(conv_options(width, width, 3, stride_, 1, groups, false));
+        conv3 = torch::nn::Conv2d(conv_options(width, planes * 4, 1, 1, 0, 1, false));
+        bn3 = torch::nn::BatchNorm2d(torch::nn::BatchNorm2dOptions(planes * 4));
+    }
+
+    register_module(&quot;conv1&quot;, conv1);
+    register_module(&quot;bn1&quot;, bn1);
+    register_module(&quot;conv2&quot;, conv2);
+    register_module(&quot;bn2&quot;, bn2);
+    if (!is_basic) {
+        register_module(&quot;conv3&quot;, conv3);
+        register_module(&quot;bn3&quot;, bn3);
+    }
+
+    if (!downsample-&gt;is_empty()) {
+        register_module(&quot;downsample&quot;, downsample);
+    }
+}
+
+torch::Tensor BlockImpl::forward(torch::Tensor x) {
+    torch::Tensor residual = x.clone();
+
+    x = conv1-&gt;forward(x);
+    x = bn1-&gt;forward(x);
+    x = torch::relu(x);
+
+    x = conv2-&gt;forward(x);
+    x = bn2-&gt;forward(x);
+
+    if (!is_basic) {
+        x = torch::relu(x);
+        x = conv3-&gt;forward(x);
+        x = bn3-&gt;forward(x);
+    }
+
+    if (!downsample-&gt;is_empty()) {
+        residual = downsample-&gt;forward(residual);
+    }
+
+    x += residual;
+    x = torch::relu(x);
+
+    return x;
+}
+
+</code></pre>
+
+<p>然后不要忘了熟悉的conv_options函数，定义如下：</p>
+<pre><code class="c++">inline torch::nn::Conv2dOptions conv_options(int64_t in_planes, int64_t out_planes, int64_t kerner_size,
+    int64_t stride = 1, int64_t padding = 0, int groups = 1, bool with_bias = true) {
+    torch::nn::Conv2dOptions conv_options = torch::nn::Conv2dOptions(in_planes, out_planes, kerner_size);
+    conv_options.stride(stride);
+    conv_options.padding(padding);
+    conv_options.bias(with_bias);
+    conv_options.groups(groups);
+    return conv_options;
+}
+
+</code></pre>
+
+<p>和之前章节中的相比，增加了groups参数，同时with_bias默认打开，使用需要注意修改。</p>
+<p>2.ResNet主体搭建</p>
+<p>定义好Block模块后就可以设计ResNet了，c++中ResNet模型声明类似pytorch中的ResNet。但是初始化参数增加一个model_type，辅助判断采用哪种Block。</p>
+<pre><code class="c++">class ResNetImpl : public torch::nn::Module {
+public:
+    ResNetImpl(std::vector&lt;int&gt; layers, int num_classes = 1000, std::string model_type = &quot;resnet18&quot;,
+        int groups = 1, int width_per_group = 64);
+    torch::Tensor forward(torch::Tensor x);
+    std::vector&lt;torch::Tensor&gt; features(torch::Tensor x);
+    torch::nn::Sequential _make_layer(int64_t planes, int64_t blocks, int64_t stride = 1);
+
+private:
+    int expansion = 1; bool is_basic = true;
+    int64_t inplanes = 64; int groups = 1; int base_width = 64;
+    torch::nn::Conv2d conv1{ nullptr };
+    torch::nn::BatchNorm2d bn1{ nullptr };
+    torch::nn::Sequential layer1{ nullptr };
+    torch::nn::Sequential layer2{ nullptr };
+    torch::nn::Sequential layer3{ nullptr };
+    torch::nn::Sequential layer4{ nullptr };
+    torch::nn::Linear fc{nullptr};
+};
+TORCH_MODULE(ResNet);
+</code></pre>
+
+<p>在实现初始化函数之前，需要实现_make_layer函数。实现好_make_layer函数后再实现ResNet初始化函数，代码如下：</p>
+<pre><code class="c++">torch::nn::Sequential ResNetImpl::_make_layer(int64_t planes, int64_t blocks, int64_t stride) {
+
+    torch::nn::Sequential downsample;
+    if (stride != 1 || inplanes != planes * expansion) {
+        downsample = torch::nn::Sequential(
+            torch::nn::Conv2d(conv_options(inplanes, planes *  expansion, 1, stride, 0, 1, false)),
+            torch::nn::BatchNorm2d(planes *  expansion)
+        );
+    }
+    torch::nn::Sequential layers;
+    layers-&gt;push_back(Block(inplanes, planes, stride, downsample, groups, base_width, is_basic));
+    inplanes = planes *  expansion;
+    for (int64_t i = 1; i &lt; blocks; i++) {
+        layers-&gt;push_back(Block(inplanes, planes, 1, torch::nn::Sequential(), groups, base_width,is_basic));
+    }
+
+    return layers;
+}
+
+ResNetImpl::ResNetImpl(std::vector&lt;int&gt; layers, int num_classes, std::string model_type, int _groups, int _width_per_group)
+{
+    if (model_type != &quot;resnet18&quot; &amp;&amp; model_type != &quot;resnet34&quot;)
+    {
+        expansion = 4;
+        is_basic = false;
+    }
+    groups = _groups;
+    base_width = _width_per_group;
+    conv1 = torch::nn::Conv2d(conv_options(3, 64, 7, 2, 3, 1, false));
+    bn1 = torch::nn::BatchNorm2d(torch::nn::BatchNorm2dOptions(64));
+    layer1 = torch::nn::Sequential(_make_layer(64, layers[0]));
+    layer2 = torch::nn::Sequential(_make_layer(128, layers[1], 2));
+    layer3 = torch::nn::Sequential(_make_layer(256, layers[2], 2));
+    layer4 = torch::nn::Sequential(_make_layer(512, layers[3], 2));
+
+    fc = torch::nn::Linear(512 * expansion, num_classes);
+    register_module(&quot;conv1&quot;, conv1);
+    register_module(&quot;bn1&quot;, bn1);
+    register_module(&quot;layer1&quot;, layer1);
+    register_module(&quot;layer2&quot;, layer2);
+    register_module(&quot;layer3&quot;, layer3);
+    register_module(&quot;layer4&quot;, layer4);
+    register_module(&quot;fc&quot;, fc);
+}
+</code></pre>
+
+<p>3.前向传播及特征提取</p>
+<p>前向传播相对简单，直接根据定义好的层往下传播即可。</p>
+<pre><code class="c++">
+// 实现ResNetImpl的forward的成员方法
+torch::Tensor  ResNetImpl::forward(torch::Tensor x) {
+    x = conv1-&gt;forward(x);
+    x = bn1-&gt;forward(x);
+    x = torch::relu(x);
+    x = torch::max_pool2d(x, 3, 2, 1);
+
+    x = layer1-&gt;forward(x);
+    x = layer2-&gt;forward(x);
+    x = layer3-&gt;forward(x);
+    x = layer4-&gt;forward(x);
+
+    x = torch::avg_pool2d(x, 7, 1);
+    x = x.view({ x.sizes()[0], -1 });
+    x = fc-&gt;forward(x);
+
+    return torch::log_softmax(x, 1);
+}
+
+</code></pre>
+
+<p>但是本文是介绍分割用的，所以需要对不同的特征层进行提取，存储到<code>std::vector&lt;torch::Tensor&gt;</code>中。</p>
+<pre><code class="c++">std::vector&lt;torch::Tensor&gt; ResNetImpl::features(torch::Tensor x){
+    std::vector&lt;torch::Tensor&gt; features;
+    features.push_back(x);  //push_back 存放数据
+    x = conv1-&gt;forward(x);
+    x = bn1-&gt;forward(x);
+    x = torch::relu(x);
+
+    features.push_back(x);
+    x = torch::max_pool2d(x, 3, 2, 1);
+
+    x = layer1-&gt;forward(x);
+
+    features.push_back(x);
+    x = layer2-&gt;forward(x);
+
+    features.push_back(x);
+    x = layer3-&gt;forward(x);
+
+    features.push_back(x);
+    x = layer4-&gt;forward(x);
+
+    features.push_back(x);
+
+    return features;
+}
+</code></pre>
+
+<h3 id="3u-net">3.U-Net解码</h3>
+<p>上面的ResNet部分其实可以开单章详细讲解，但是参照源码读者应该容易理解，就直接放一起。如果上面的内容是对torchvision在libtorch中的优化，下面的部分可以看成直接对SMP中U-Net解码的c++复制。</p>
+<p>直接上声明：</p>
+<pre><code class="c++">//.h中的内容
+//attention and basic
+class SCSEModuleImpl: public torch::nn::Module{
+public:
+    SCSEModuleImpl(int in_channels, int reduction=16, bool use_attention = false);
+    torch::Tensor forward(torch::Tensor x);
+private:
+    bool use_attention = false;
+    torch::nn::Sequential cSE{nullptr};
+    torch::nn::Sequential sSE{nullptr};
+};TORCH_MODULE(SCSEModule);
+
+class Conv2dReLUImpl: public torch::nn::Module{
+public:
+    Conv2dReLUImpl(int in_channels, int out_channels, int kernel_size = 3, int padding = 1);
+    torch::Tensor forward(torch::Tensor x);
+private:
+    torch::nn::Conv2d conv2d{nullptr};
+    torch::nn::BatchNorm2d bn{nullptr};
+};TORCH_MODULE(Conv2dReLU);
+
+//decoderblock and center block
+class DecoderBlockImpl: public torch::nn::Module{
+public:
+    DecoderBlockImpl(int in_channels, int skip_channels, int out_channels, bool skip = true, bool attention = false);
+    torch::Tensor forward(torch::Tensor x, torch::Tensor skip);
+private:
+    Conv2dReLU conv1{nullptr};
+    Conv2dReLU conv2{nullptr};
+    SCSEModule attention1{nullptr};
+    SCSEModule attention2{nullptr};
+    torch::nn::Upsample upsample{nullptr};
+    bool is_skip = true;
+};TORCH_MODULE(DecoderBlock);
+
+torch::nn::Sequential CenterBlock(int in_channels, int out_channels);
+
+class UNetDecoderImpl:public torch::nn::Module
+{
+public:
+    UNetDecoderImpl(std::vector&lt;int&gt; encoder_channels, std::vector&lt;int&gt; decoder_channels, int n_blocks = 5,
+                bool use_attention = false, bool use_center=false);
+    torch::Tensor forward(std::vector&lt;torch::Tensor&gt; features);
+private:
+    torch::nn::Sequential center{nullptr};
+    torch::nn::ModuleList blocks = torch::nn::ModuleList();
+};TORCH_MODULE(UNetDecoder);
+
+#endif // UNETDECODER_H
+
+
+</code></pre>
+
+<p>直接上定义：</p>
+<pre><code class="c++">
+// 声明的类中的方法的实现
+SCSEModuleImpl::SCSEModuleImpl(int in_channels, int reduction, bool _use_attention){
+    use_attention = _use_attention;
+    cSE = torch::nn::Sequential(
+            torch::nn::AdaptiveAvgPool2d(torch::nn::AdaptiveAvgPool2dOptions(1)),
+            torch::nn::Conv2d(conv_options(in_channels, in_channels / reduction, 1)),
+            torch::nn::ReLU(torch::nn::ReLUOptions(true)),
+            torch::nn::Conv2d(conv_options(in_channels / reduction, in_channels, 1)),
+            torch::nn::Sigmoid());
+    sSE = torch::nn::Sequential(torch::nn::Conv2d(conv_options(in_channels, 1, 1)), torch::nn::Sigmoid());
+    register_module(&quot;cSE&quot;,cSE);
+    register_module(&quot;sSE&quot;,sSE);
+}
+
+torch::Tensor SCSEModuleImpl::forward(torch::Tensor x){
+    if(!use_attention) return x;
+    return x * cSE-&gt;forward(x) + x * sSE-&gt;forward(x);
+}
+
+Conv2dReLUImpl::Conv2dReLUImpl(int in_channels, int out_channels, int kernel_size, int padding){
+    conv2d = torch::nn::Conv2d(conv_options(in_channels,out_channels,kernel_size,1,padding));
+    bn = torch::nn::BatchNorm2d(torch::nn::BatchNorm2dOptions(out_channels));
+    register_module(&quot;conv2d&quot;, conv2d);
+    register_module(&quot;bn&quot;, bn);
+}
+
+torch::Tensor Conv2dReLUImpl::forward(torch::Tensor x){
+    x = conv2d-&gt;forward(x);
+    x = bn-&gt;forward(x);
+    return x;
+}
+
+DecoderBlockImpl::DecoderBlockImpl(int in_channels, int skip_channels, int out_channels, bool skip, bool attention){
+    conv1 = Conv2dReLU(in_channels + skip_channels, out_channels, 3, 1);
+    conv2 = Conv2dReLU(out_channels, out_channels, 3, 1);
+    register_module(&quot;conv1&quot;, conv1);
+    register_module(&quot;conv2&quot;, conv2);
+    upsample = torch::nn::Upsample(torch::nn::UpsampleOptions().scale_factor(std::vector&lt;double&gt;({2,2})).mode(torch::kNearest));
+
+    attention1 = SCSEModule(in_channels + skip_channels, 16, attention);
+    attention2 = SCSEModule(out_channels, 16, attention);
+    register_module(&quot;attention1&quot;, attention1);
+    register_module(&quot;attention2&quot;, attention2);
+    is_skip = skip;
+}
+
+torch::Tensor DecoderBlockImpl::forward(torch::Tensor x, torch::Tensor skip){
+    x = upsample-&gt;forward(x);
+    if (is_skip){
+        x = torch::cat({x, skip}, 1);
+        x = attention1-&gt;forward(x);
+    }
+    x = conv1-&gt;forward(x);
+    x = conv2-&gt;forward(x);
+    x = attention2-&gt;forward(x);
+    return x;
+}
+
+torch::nn::Sequential CenterBlock(int in_channels, int out_channels){
+    return torch::nn::Sequential(Conv2dReLU(in_channels, out_channels, 3, 1),
+                                 Conv2dReLU(out_channels, out_channels, 3, 1));
+}
+
+UNetDecoderImpl::UNetDecoderImpl(std::vector&lt;int&gt; encoder_channels, std::vector&lt;int&gt; decoder_channels, int n_blocks,
+                         bool use_attention, bool use_center)
+{
+    if (n_blocks != decoder_channels.size()) throw &quot;Model depth not equal to your provided `decoder_channels`&quot;;
+    std::reverse(std::begin(encoder_channels),std::end(encoder_channels));
+
+    // computing blocks input and output channels
+    int head_channels = encoder_channels[0];
+    std::vector&lt;int&gt; out_channels = decoder_channels;
+    decoder_channels.pop_back();
+    decoder_channels.insert(decoder_channels.begin(),head_channels);
+    std::vector&lt;int&gt; in_channels = decoder_channels;
+    encoder_channels.erase(encoder_channels.begin());
+    std::vector&lt;int&gt; skip_channels = encoder_channels;
+    skip_channels[skip_channels.size()-1] = 0;
+
+    if(use_center)  center = CenterBlock(head_channels, head_channels);
+    else center = torch::nn::Sequential(torch::nn::Identity());
+    //the last DecoderBlock of blocks need no skip tensor
+    for (int i = 0; i&lt; in_channels.size()-1; i++) {
+        blocks-&gt;push_back(DecoderBlock(in_channels[i], skip_channels[i], out_channels[i], true, use_attention));
+    }
+    blocks-&gt;push_back(DecoderBlock(in_channels[in_channels.size()-1], skip_channels[in_channels.size()-1],
+            out_channels[in_channels.size()-1], false, use_attention));
+
+    register_module(&quot;center&quot;, center);
+    register_module(&quot;blocks&quot;, blocks);
+}
+
+torch::Tensor UNetDecoderImpl::forward(std::vector&lt;torch::Tensor&gt; features){
+    std::reverse(std::begin(features),std::end(features));
+    torch::Tensor head = features[0];
+    features.erase(features.begin());
+    auto x = center-&gt;forward(head);
+    for (int i = 0; i&lt;blocks-&gt;size(); i++) {
+        x = blocks[i]-&gt;as&lt;DecoderBlock&gt;()-&gt;forward(x, features[i]);
+    }
+    return x;
+}
+
+</code></pre>
+
+<p>不展开说了，内容较多。后续还有U-Net整体和封装…</p>
+<h3 id="4u-net">4.U-Net整体设计</h3>
+<p>这是U-Net的声明，分为编码器，解码器和分割头。</p>
+<pre><code class="c++">
+// .h
+class UNetImpl : public torch::nn::Module
+{
+public:
+    UNetImpl(int num_classes, std::string encoder_name = &quot;resnet18&quot;, std::string pretrained_path = &quot;&quot;, int encoder_depth = 5,
+             std::vector&lt;int&gt; decoder_channels={256, 128, 64, 32, 16}, bool use_attention = false);
+    torch::Tensor forward(torch::Tensor x);
+private:
+    ResNet encoder{nullptr};
+    UNetDecoder decoder{nullptr};
+    SegmentationHead segmentation_head{nullptr};
+    int num_classes = 1;
+    std::vector&lt;int&gt; BasicChannels = {3, 64, 64, 128, 256, 512};
+    std::vector&lt;int&gt; BottleChannels = {3, 64, 256, 512, 1024, 2048};
+    std::map&lt;std::string, std::vector&lt;int&gt;&gt; name2layers = getParams();
+};TORCH_MODULE(UNet);
+
+</code></pre>
+
+<p>这是实现：</p>
+<pre><code class="c++">
+UNetImpl::UNetImpl(int _num_classes, std::string encoder_name, std::string pretrained_path, int encoder_depth,
+                   std::vector&lt;int&gt; decoder_channels, bool use_attention){
+    num_classes = _num_classes;
+    std::vector&lt;int&gt; encoder_channels = BasicChannels;
+    if(!name2layers.count(encoder_name)) throw &quot;encoder name must in {resnet18, resnet34, resnet50, resnet101}&quot;;
+    if(encoder_name!=&quot;resnet18&quot; &amp;&amp; encoder_name!=&quot;resnet34&quot;){
+        encoder_channels = BottleChannels;
+    }
+
+    encoder = pretrained_resnet(1000, encoder_name, pretrained_path);
+    decoder = UNetDecoder(encoder_channels,decoder_channels, encoder_depth, use_attention, false);
+    segmentation_head = SegmentationHead(decoder_channels[decoder_channels.size()-1], num_classes, 1, 1);
+
+    register_module(&quot;encoder&quot;,encoder);
+    register_module(&quot;decoder&quot;,decoder);
+    register_module(&quot;segmentation_head&quot;,segmentation_head);
+}
+
+torch::Tensor UNetImpl::forward(torch::Tensor x){
+    std::vector&lt;torch::Tensor&gt; features = encoder-&gt;features(x);
+    x = decoder-&gt;forward(features);
+    x = segmentation_head-&gt;forward(x);
+    return x;
+}
+
+</code></pre>
+
+<p>分割头：</p>
+<pre><code class="c++">// segmentation head的实现
+class SegmentationHeadImpl: public torch::nn::Module{
+public:
+    SegmentationHeadImpl(int in_channels, int out_channels, int kernel_size=3, double upsampling=1);
+    torch::Tensor forward(torch::Tensor x);
+private:
+    torch::nn::Conv2d conv2d{nullptr};
+    torch::nn::Upsample upsampling{nullptr};
+};TORCH_MODULE(SegmentationHead);
+
+SegmentationHeadImpl::SegmentationHeadImpl(int in_channels, int out_channels, int kernel_size, double _upsampling){
+    conv2d = torch::nn::Conv2d(conv_options(in_channels, out_channels, kernel_size, 1, kernel_size / 2));
+    upsampling = torch::nn::Upsample(upsample_options(std::vector&lt;double&gt;{_upsampling,_upsampling}));
+    register_module(&quot;conv2d&quot;,conv2d);
+}
+torch::Tensor SegmentationHeadImpl::forward(torch::Tensor x){
+    x = conv2d-&gt;forward(x);
+    x = upsampling-&gt;forward(x);
+    return x;
+}
+
+</code></pre>
+
+<p>内容过于多，博客写得比较费劲。直接将封装和测试代码放到GitHub上了，在这里。里面集成了包括ResNet，ResNext和可能的ResNest为骨干网络，目前网络架构实现了FPN和U-Net。如果项目内容有帮到你请务必给个star，作者需要这份支持作为动力！！！</p>
+<p>实际测试U-Net在c++代码执行效率，发现与python在cpu下速度一致，GPU下快35%+。c++真香。</p>
+<p>AllentDan大佬的代码地址:<a href="https://github.com/AllentDan/LibtorchTutorials/tree/main/lesson6-Segmentation">https://github.com/AllentDan/LibtorchTutorials/tree/main/lesson6-Segmentation</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../chapter7/" class="btn btn-neutral float-right" title="第七章 目标检测模型搭建，训练，预测">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../chapter5/" class="btn btn-neutral" title="第五章 分类模型搭建，训练，预测"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/DataXujing/libtorch-tutorials/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../chapter5/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../chapter7/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

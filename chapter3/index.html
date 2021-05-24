@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="徐静">
+  
+  <link rel="shortcut icon" href="../icon.ico">
+  
+  <title>第三章 模型搭建 - libtorch</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "\u7b2c\u4e09\u7ae0 \u6a21\u578b\u642d\u5efa";
+    var mkdocs_page_input_path = "chapter3.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> libtorch</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../about/">关于</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">前言</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter1/">第一章 开发环境搭建(vs,opencv,libtorch)</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter2/">第二章 张量的常规操作</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">第三章 模型搭建</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1">1.基本模块的搭建</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1mlp">1.MLP基本单元</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2cnn">2.CNN基本单元</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2mlp">2.简单的MLP</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3cnn">3.简单CNN</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4lstm">4.简单LSTM</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter4/">第四章 数据加载模块</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter5/">第五章 分类模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter6/">第六章 分割模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter7/">第七章 目标检测模型搭建，训练，预测</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter9/">第八章 libtorch部署例子</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../chapter8/">第九章 总结展望</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">libtorch</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>第三章 模型搭建</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/DataXujing/libtorch-tutorials/edit/master/docs/chapter3.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="_1">第三章 模型搭建</h2>
+<hr />
+<h3 id="1">1.基本模块的搭建</h3>
+<p>模块化编程的思想非常重要，通过模块化编程可以大幅减少重复的敲代码过程，同时代码可读性也会增加。本章将讲述如何使用libtorch搭建一些MLP和CNN的基本模块。</p>
+<h4 id="1mlp">1.MLP基本单元</h4>
+<p>首先是线性层的声明和定义，包括初始化和前向传播函数。代码如下：</p>
+<pre><code class="cpp">// LinearBnReluImpl 类
+class LinearBnReluImpl : public torch::nn::Module{
+    public:
+        LinearBnReluImpl(int intput_features, int output_features);
+        torch::Tensor forward(torch::Tensor x);
+    private:
+        //layers
+        torch::nn::Linear ln{nullptr};  //ln是指向类，结构或联合的指针
+        torch::nn::BatchNorm1d bn{nullptr};
+};
+TORCH_MODULE(LinearBnRelu);
+
+// 类的构造函数
+LinearBnReluImpl::LinearBnReluImpl(int in_features, int out_features){
+    ln = register_module(&quot;ln&quot;, torch::nn::Linear(torch::nn::LinearOptions(in_features, out_features)));
+    bn = register_module(&quot;bn&quot;, torch::nn::BatchNorm1d(out_features));
+}
+
+// 类的forword成员函数
+torch::Tensor LinearBnReluImpl::forward(torch::Tensor x){
+    x = torch::relu(ln-&gt;forward(x));  
+    x = bn(x);
+    return x;
+}
+</code></pre>
+
+<p>在MLP的构造线性层模块类时，我们继承了<code>torch::nn::Module</code>类，将初始化和前向传播模块作为public，可以给对象使用，而里面的线性层<code>torch::nn::Linear</code>和归一化层<code>torch::nn::BatchNorm1d</code>被隐藏作为私有变量。</p>
+<p>定义构造函数时，需要将原本的指针对象ln和bn进行赋值，同时将两者的名称也确定。前向传播函数就和pytorch中的forward类似。</p>
+<h4 id="2cnn">2.CNN基本单元</h4>
+<p>CNN的基本单元构建和MLP的构建类似，但是又稍有不同，首先需要定义的时卷积超参数确定函数。</p>
+<pre><code class="cpp">inline torch::nn::Conv2dOptions conv_options(int64_t in_planes, int64_t out_planes, int64_t kerner_size,
+    int64_t stride = 1, int64_t padding = 0, bool with_bias = false) {
+        torch::nn::Conv2dOptions conv_options = torch::nn::Conv2dOptions(in_planes, out_planes, kerner_size);
+        conv_options.stride(stride);
+        conv_options.padding(padding);
+        conv_options.bias(with_bias);
+        return conv_options;
+}
+</code></pre>
+
+<p>该函数返回<code>torch::nn::Conv2dOptions</code>对象，对象的超参数由函数接口指定，这样可以方便使用。同时指定inline(内联函数），提高Release模式下代码执行效率。</p>
+<pre><code>C++ 内联函数是通常与类一起使用。如果一个函数是内联的，那么在编译时，编译器会把该函数的代码副本放置在每个调用该函数的地方。
+
+对内联函数进行任何修改，都需要重新编译函数的所有客户端，因为编译器需要重新更换一次所有的代码，否则将会继续使用旧的函数。
+
+如果想把一个函数定义为内联函数，则需要在函数名前面放置关键字 inline，在调用函数之前需要对函数进行定义。如果已定义的函数多于一行，编译器会忽略 inline 限定符。
+</code></pre>
+
+<p>随后则是和MLP的线性模块类似，CNN的基本模块由卷积层，激活函数和归一化层组成。代码如下：</p>
+<pre><code class="cpp">class ConvReluBnImpl : public torch::nn::Module {
+    public:
+        ConvReluBnImpl(int input_channel=3, int output_channel=64, int kernel_size = 3, int stride = 1); // 构造函数
+        torch::Tensor forward(torch::Tensor x);  //forward成员函数
+    private:
+        // Declare layers
+        torch::nn::Conv2d conv{ nullptr };
+        torch::nn::BatchNorm2d bn{ nullptr };
+};
+TORCH_MODULE(ConvReluBn);
+
+// 构造函数的实现
+ConvReluBnImpl::ConvReluBnImpl(int input_channel, int output_channel, int kernel_size, int stride) {
+    conv = register_module(&quot;conv&quot;, torch::nn::Conv2d(conv_options(input_channel,output_channel,kernel_size,stride,kernel_size/2)));
+    bn = register_module(&quot;bn&quot;, torch::nn::BatchNorm2d(output_channel));
+
+}
+
+// forward函数的实现
+torch::Tensor ConvReluBnImpl::forward(torch::Tensor x) {
+    x = torch::relu(conv-&gt;forward(x));
+    x = bn(x);
+    return x;
+}
+
+</code></pre>
+
+<p>每一层的实现均是通过前面定义的基本模块LinearBnRelu。</p>
+<h3 id="2mlp">2.简单的MLP</h3>
+<p>在MLP的例子中，我们以搭建一个四层感知机为例，介绍如何使用cpp实现深度学习模型。该感知机接受in_features个特征，输出out_features个编码后的特征。中间特征数定义为32，64和128。</p>
+<pre><code class="cpp">class MLP: public torch::nn::Module{  // 继承
+    public:
+        MLP(int in_features, int out_features);
+        torch::Tensor forward(torch::Tensor x);
+    private:
+        int mid_features[3] = {32,64,128};
+        LinearBnRelu ln1{nullptr};
+        LinearBnRelu ln2{nullptr};
+        LinearBnRelu ln3{nullptr};
+        torch::nn::Linear out_ln{nullptr};
+};
+
+// 构造函数的实现
+MLP::MLP(int in_features, int out_features){
+    ln1 = LinearBnRelu(in_features, mid_features[0]);
+    ln2 = LinearBnRelu(mid_features[0], mid_features[1]);
+    ln3 = LinearBnRelu(mid_features[1], mid_features[2]);
+    out_ln = torch::nn::Linear(mid_features[2], out_features);
+
+    ln1 = register_module(&quot;ln1&quot;, ln1);
+    ln2 = register_module(&quot;ln2&quot;, ln2);
+    ln3 = register_module(&quot;ln3&quot;, ln3);
+    out_ln = register_module(&quot;out_ln&quot;,out_ln);
+}
+
+// forward函数的实现
+torch::Tensor MLP::forward(torch::Tensor x){
+    x = ln1-&gt;forward(x);  //指针成员的访问调用
+    x = ln2-&gt;forward(x);
+    x = ln3-&gt;forward(x);
+    x = out_ln-&gt;forward(x);
+    return x;
+}
+</code></pre>
+
+<p>每一层的实现均是通过前面定义的基本模块LinearBnRelu。</p>
+<h3 id="3cnn">3.简单CNN</h3>
+<p>前面介绍了构建CNN的基本模块ConvReluBn，接下来尝试用c++搭建CNN模型。该CNN由三个stage组成，每个stage又由一个卷积层一个下采样层组成。这样相当于对原始输入图像进行了8倍下采样。中间层的通道数变化与前面MLP特征数变化相同，均为输入-&gt;32-&gt;64-&gt;128-&gt;输出。</p>
+<pre><code class="cpp">
+class plainCNN : public torch::nn::Module{
+    public:
+        plainCNN(int in_channels, int out_channels);
+        torch::Tensor forward(torch::Tensor x);
+    private:
+        int mid_channels[3] = {32,64,128};
+        ConvReluBn conv1{nullptr};
+        ConvReluBn down1{nullptr};
+        ConvReluBn conv2{nullptr};
+        ConvReluBn down2{nullptr};
+        ConvReluBn conv3{nullptr};
+        ConvReluBn down3{nullptr};
+        torch::nn::Conv2d out_conv{nullptr};
+};
+
+// 构造函数的实现
+plainCNN::plainCNN(int in_channels, int out_channels){
+    conv1 = ConvReluBn(in_channels,mid_channels[0],3);
+    down1 = ConvReluBn(mid_channels[0],mid_channels[0],3,2);
+    conv2 = ConvReluBn(mid_channels[0],mid_channels[1],3);
+    down2 = ConvReluBn(mid_channels[1],mid_channels[1],3,2);
+    conv3 = ConvReluBn(mid_channels[1],mid_channels[2],3);
+    down3 = ConvReluBn(mid_channels[2],mid_channels[2],3,2);
+    out_conv = torch::nn::Conv2d(conv_options(mid_channels[2],out_channels,3));
+
+    conv1 = register_module(&quot;conv1&quot;,conv1);
+    down1 = register_module(&quot;down1&quot;,down1);
+    conv2 = register_module(&quot;conv2&quot;,conv2);
+    down2 = register_module(&quot;down2&quot;,down2);
+    conv3 = register_module(&quot;conv3&quot;,conv3);
+    down3 = register_module(&quot;down3&quot;,down3);
+    out_conv = register_module(&quot;out_conv&quot;,out_conv);
+}
+
+// forward 方法的使用
+torch::Tensor plainCNN::forward(torch::Tensor x){
+    x = conv1-&gt;forward(x);
+    x = down1-&gt;forward(x);
+    x = conv2-&gt;forward(x);
+    x = down2-&gt;forward(x);
+    x = conv3-&gt;forward(x);
+    x = down3-&gt;forward(x);
+    x = out_conv-&gt;forward(x);
+    return x;
+}
+</code></pre>
+
+<p>假定输入一个三通道图片，输出通道数定义为n，输入表示一个<code>[1,3,224,224]</code>的张量，将得到一个<code>[1,n,28,28]</code>的输出张量。</p>
+<h3 id="4lstm">4.简单LSTM</h3>
+<p>最后则是一个简单的LSTM的例子，用以处理时序型特征。在直接使用<code>torch::nn::LSTM</code>类之前，我们先定一个返回<code>torch::nn::LSTMOptions</code>对象的函数，该函数接受关于LSTM的超参数，返回这些超参数定义的结果。</p>
+<pre><code class="cpp">inline torch::nn::LSTMOptions lstmOption(int in_features, int hidden_layer_size, int num_layers, bool batch_first = false, bool bidirectional = false){
+    torch::nn::LSTMOptions lstmOption = torch::nn::LSTMOptions(in_features, hidden_layer_size);
+    lstmOption.num_layers(num_layers).batch_first(batch_first).bidirectional(bidirectional);
+    return lstmOption;
+}
+
+//batch_first: true for io(batch, seq, feature) else io(seq, batch, feature)
+class LSTM: public torch::nn::Module{
+public:
+    LSTM(int in_features, int hidden_layer_size, int out_size, int num_layers, bool batch_first);
+    torch::Tensor forward(torch::Tensor x);
+private:
+    torch::nn::LSTM lstm{nullptr};
+    torch::nn::Linear ln{nullptr};
+    std::tuple&lt;torch::Tensor, torch::Tensor&gt; hidden_cell;
+};
+</code></pre>
+
+<p>声明好LSTM以后，我们将内部的初始化函数和前向传播函数实现如下：</p>
+<pre><code class="cpp">LSTM::LSTM(int in_features, int hidden_layer_size, int out_size, int num_layers, bool batch_first){
+    lstm = torch::nn::LSTM(lstmOption(in_features, hidden_layer_size, num_layers, batch_first));
+    ln = torch::nn::Linear(hidden_layer_size, out_size);
+
+    lstm = register_module(&quot;lstm&quot;,lstm);
+    ln = register_module(&quot;ln&quot;,ln);
+}
+
+torch::Tensor LSTM::forward(torch::Tensor x){
+    auto lstm_out = lstm-&gt;forward(x);
+    auto predictions = ln-&gt;forward(std::get&lt;0&gt;(lstm_out));
+    return predictions.select(1,-1);
+}
+
+</code></pre>
+
+<p>感谢大佬开源： <a href="https://allentdan.github.io/2021/01/16/libtorch%E6%95%99%E7%A8%8B%EF%BC%88%E4%B8%89%EF%BC%89/">libtorch教程（三）</a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../chapter4/" class="btn btn-neutral float-right" title="第四章 数据加载模块">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../chapter2/" class="btn btn-neutral" title="第二章 张量的常规操作"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/DataXujing/libtorch-tutorials/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../chapter2/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../chapter4/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

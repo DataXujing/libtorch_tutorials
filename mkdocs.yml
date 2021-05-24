@@ -1,0 +1,18 @@
+site_name: libtorch
+site_author: 徐静
+site_favicon: icon.ico
+repo_url: https://github.com/DataXujing/libtorch-tutorials/
+pages:
+  - 关于: about.md
+  - 前言: index.md
+  - 第一章 开发环境搭建(vs,opencv,libtorch): chapter1.md
+  - 第二章 张量的常规操作: chapter2.md
+  - 第三章 模型搭建: chapter3.md
+  - 第四章 数据加载模块: chapter4.md
+  - 第五章 分类模型搭建，训练，预测: chapter5.md
+  - 第六章 分割模型搭建，训练，预测: chapter6.md
+  - 第七章 目标检测模型搭建，训练，预测: chapter7.md
+  - 第八章 libtorch部署例子: chapter9.md
+  - 第九章 总结展望: chapter8.md
+ 
+theme: readthedocs
